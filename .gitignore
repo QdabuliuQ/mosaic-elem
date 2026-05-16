@@ -24,8 +24,10 @@ Desktop.ini
 *.crx
 *.xpi
 
+# 本地打包脚本与输出（不提交 GitHub）
+scripts/pack-extension.sh
+
 # If you add a JS toolchain later
 node_modules/
-dist/
 build/
 coverage/
