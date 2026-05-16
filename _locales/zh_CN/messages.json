@@ -1,0 +1,48 @@
+{
+  "extName": { "message": "MosaicElem", "description": "扩展名称" },
+  "extDescription": {
+    "message": "选中页面元素并打码或模糊，用于隐私遮挡。",
+    "description": "扩展描述"
+  },
+  "modesSectionAria": { "message": "遮挡方式", "description": "区块无障碍" },
+  "modesTitle": { "message": "遮挡方式", "description": "区块标题" },
+  "modeBlur": { "message": "高斯模糊", "description": "模式" },
+  "modeBlurTitle": {
+    "message": "整体柔化，轮廓可能仍可辨认，适合轻度打码。",
+    "description": "提示"
+  },
+  "modePixel": { "message": "像素格马赛克", "description": "模式" },
+  "modePixelTitle": {
+    "message": "网格与背景模糊，接近方块马赛克观感。",
+    "description": "提示"
+  },
+  "modeSolid": { "message": "纯色块覆盖", "description": "模式" },
+  "modeSolidTitle": { "message": "纯黑圆角色块，完全遮盖。", "description": "提示" },
+  "modeDots": { "message": "点阵 / 网点", "description": "模式" },
+  "modeDotsTitle": { "message": "密集圆点图案。", "description": "提示" },
+  "modeStripes": { "message": "条纹 / 斜纹", "description": "模式" },
+  "modeStripesTitle": { "message": "斜向条纹遮挡。", "description": "提示" },
+  "pickPanelAria": { "message": "快捷键与开启选择", "description": "点选区块无障碍" },
+  "pickShortcutLabel": { "message": "快捷键", "description": "快捷键行标签" },
+  "keyCommand": { "message": "Command", "description": "键名" },
+  "keyShift": { "message": "Shift", "description": "键名" },
+  "keyCtrl": { "message": "Ctrl", "description": "键名" },
+  "keyAlt": { "message": "Alt", "description": "键名" },
+  "keyOption": { "message": "Option", "description": "键名" },
+  "keyComma": { "message": ",", "description": "键名" },
+  "btnPickStart": { "message": "开启选择元素", "description": "按钮" },
+  "btnPickStop": { "message": "关闭选择元素", "description": "按钮" },
+  "btnPickStartTitle": {
+    "message": "进入点选；也可用快捷键。可在 chrome://extensions/shortcuts 修改按键。",
+    "description": "按钮提示"
+  },
+  "btnPickStopTitle": { "message": "退出点选；或按 Esc。", "description": "按钮提示" },
+  "cmdTogglePick": { "message": "切换元素选中模式", "description": "快捷键说明" },
+  "btnClearAll": { "message": "清除全部马赛克", "description": "按钮" },
+  "statusPickOn": { "message": "已开启，Esc 退出", "description": "状态" },
+  "statusPickOff": { "message": "已关闭", "description": "状态" },
+  "statusCleared": { "message": "已清除全部马赛克", "description": "状态" },
+  "statusNoTab": { "message": "无活动标签页", "description": "状态" },
+  "statusInjectFail": { "message": "无法注入（刷新页面后重试）", "description": "状态" },
+  "statusDone": { "message": "已执行", "description": "状态" }
+}

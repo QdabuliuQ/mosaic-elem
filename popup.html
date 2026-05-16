@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <main class="shell">
+    <header class="top">
+      <div class="brand">
+        <img
+          class="brand-mark"
+          src="icons/icon-128.png"
+          alt=""
+          decoding="async"
+          aria-hidden="true"
+        />
+        <div class="brand-text">
+          <h1 class="title" data-i18n="extName"></h1>
+          <p class="tagline" data-i18n="extDescription"></p>
+        </div>
+      </div>
+      <hr class="divider" />
+    </header>
+
+    <section class="panel pick" data-i18n-aria="pickPanelAria" aria-label="">
+      <p class="kbd-line" id="pickShortcut" aria-live="polite"></p>
+      <button id="toggle" type="button" class="btn btn-primary" aria-pressed="false"></button>
+    </section>
+
+    <section class="panel modes" id="modes" data-i18n-aria="modesSectionAria" aria-label="">
+      <div class="field-label" data-i18n="modesTitle"></div>
+      <div class="mode-list">
+        <label class="mode-row" data-i18n-title="modeBlurTitle"><input type="radio" name="mosaicMode" value="blur" /> <span data-i18n="modeBlur"></span></label>
+        <label class="mode-row" data-i18n-title="modePixelTitle"><input type="radio" name="mosaicMode" value="pixel" /> <span data-i18n="modePixel"></span></label>
+        <label class="mode-row" data-i18n-title="modeSolidTitle"><input type="radio" name="mosaicMode" value="solid" /> <span data-i18n="modeSolid"></span></label>
+        <label class="mode-row" data-i18n-title="modeDotsTitle"><input type="radio" name="mosaicMode" value="dots" /> <span data-i18n="modeDots"></span></label>
+        <label class="mode-row" data-i18n-title="modeStripesTitle"><input type="radio" name="mosaicMode" value="stripes" /> <span data-i18n="modeStripes"></span></label>
+      </div>
+    </section>
+
+    <button id="clear" type="button" class="btn btn-secondary" data-i18n="btnClearAll"></button>
+    <p id="status" class="status" role="status"></p>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor / IDE
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs & temp
+*.log
+*.tmp
+*.temp
+
+# Secrets (never commit)
+.env
+.env.*
+*.pem
+
+# Optional: packaged extension / store artifacts
+*.zip
+*.crx
+*.xpi
+
+# If you add a JS toolchain later
+node_modules/
+dist/
+build/
+coverage/

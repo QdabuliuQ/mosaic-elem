@@ -1,0 +1,54 @@
+{
+  "extName": { "message": "MosaicElem", "description": "Extension name" },
+  "extDescription": {
+    "message": "Pick page elements and apply mosaic or blur for privacy.",
+    "description": "Extension description"
+  },
+  "modesSectionAria": { "message": "Obfuscation mode", "description": "Aria for mode section" },
+  "modesTitle": { "message": "Obfuscation mode", "description": "Section title" },
+  "modeBlur": { "message": "Gaussian blur", "description": "Mode label" },
+  "modeBlurTitle": {
+    "message": "Soft overall blur; outline may still be guessed. Good for light redaction.",
+    "description": "Tooltip"
+  },
+  "modePixel": { "message": "Pixel / block mosaic", "description": "Mode label" },
+  "modePixelTitle": {
+    "message": "Grid + backdrop blur for a classic block mosaic look.",
+    "description": "Tooltip"
+  },
+  "modeSolid": { "message": "Solid overlay", "description": "Mode label" },
+  "modeSolidTitle": {
+    "message": "Solid black rounded rectangle, fully opaque.",
+    "description": "Tooltip"
+  },
+  "modeDots": { "message": "Dot / halftone", "description": "Mode label" },
+  "modeDotsTitle": { "message": "Dense dot pattern.", "description": "Tooltip" },
+  "modeStripes": { "message": "Stripes / diagonals", "description": "Mode label" },
+  "modeStripesTitle": { "message": "Diagonal stripe overlay.", "description": "Tooltip" },
+  "pickPanelAria": { "message": "Shortcut and pick mode", "description": "Pick panel aria" },
+  "pickShortcutLabel": { "message": "Shortcut", "description": "Shortcut row label" },
+  "keyCommand": { "message": "Command", "description": "Key label" },
+  "keyShift": { "message": "Shift", "description": "Key label" },
+  "keyCtrl": { "message": "Ctrl", "description": "Key label" },
+  "keyAlt": { "message": "Alt", "description": "Key label" },
+  "keyOption": { "message": "Option", "description": "Key label" },
+  "keyComma": { "message": ",", "description": "Key label" },
+  "btnPickStart": { "message": "Start picking elements", "description": "Button" },
+  "btnPickStop": { "message": "Stop picking elements", "description": "Button" },
+  "btnPickStartTitle": {
+    "message": "Start pick mode; you can also use the shortcut. Change keys at chrome://extensions/shortcuts.",
+    "description": "Button tooltip"
+  },
+  "btnPickStopTitle": { "message": "Exit pick mode; or press Esc.", "description": "Button tooltip" },
+  "cmdTogglePick": { "message": "Toggle element pick mode", "description": "Keyboard command" },
+  "btnClearAll": { "message": "Clear all obfuscation", "description": "Button" },
+  "statusPickOn": { "message": "Pick mode on. Press Esc to exit.", "description": "Status" },
+  "statusPickOff": { "message": "Pick mode off.", "description": "Status" },
+  "statusCleared": { "message": "All obfuscation removed.", "description": "Status" },
+  "statusNoTab": { "message": "No active tab.", "description": "Status" },
+  "statusInjectFail": {
+    "message": "Cannot inject (reload the page and try again).",
+    "description": "Status"
+  },
+  "statusDone": { "message": "Done.", "description": "Status" }
+}

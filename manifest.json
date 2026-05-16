@@ -1,0 +1,51 @@
+{
+  "manifest_version": 3,
+  "default_locale": "en",
+  "name": "__MSG_extName__",
+  "version": "0.1.0",
+  "description": "__MSG_extDescription__",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "__MSG_extName__",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["storage", "activeTab"],
+  "commands": {
+    "toggle-pick": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+1",
+        "windows": "Ctrl+Shift+1",
+        "linux": "Ctrl+Shift+1",
+        "chromeos": "Ctrl+Shift+1",
+        "mac": "Command+Shift+1"
+      },
+      "description": "__MSG_cmdTogglePick__"
+    }
+  },
+  "host_permissions": ["<all_urls>"],
+  "web_accessible_resources": [
+    {
+      "resources": ["page-pick.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
