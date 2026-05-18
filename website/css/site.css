@@ -88,6 +88,15 @@ body {
   letter-spacing: -0.02em;
 }
 
+.logo-icon {
+  display: block;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
 .nav {
   display: flex;
   flex-wrap: wrap;
@@ -322,12 +331,20 @@ main {
 }
 
 .demo-stage {
+  position: relative;
   padding: 20px;
   min-height: 280px;
   cursor: default;
+  isolation: isolate;
 }
 
 .demo-stage.is-picking {
+  cursor: crosshair;
+  outline: 2px dashed rgba(255, 145, 77, 0.55);
+  outline-offset: -2px;
+}
+
+.demo-stage.is-picking * {
   cursor: crosshair;
 }
 

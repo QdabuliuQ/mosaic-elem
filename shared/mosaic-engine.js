@@ -5,7 +5,7 @@
 (function (global) {
   const MOSAIC = "elementmark-mosaic";
   const OVERLAY = "em-mosaic-layer";
-  const WRAP = "em-mosaic-wrap";
+  const FLOAT = "em-mosaic-float";
   const GUIDE_ID = "elementmark-guides";
   const HOVER_MASK_ID = "elementmark-hover-mask";
   const STYLE_ID = "elementmark-style";
@@ -26,6 +26,7 @@
     "TRACK",
     "WBR",
   ]);
+  const EXTERNAL_OVERLAY = new Set(["TEXTAREA", "SELECT"]);
   const NO_INNER_OVERLAY = new Set(["TEXTAREA", "SELECT"]);
   const INPUT_WRAP_SKIP = new Set([
     "hidden",
@@ -127,11 +128,48 @@
   background:none!important;
   background-image:none!important;
 }
-.${WRAP}{
-  display:inline-block!important;
-  position:relative!important;
-  vertical-align:top!important;
-  max-width:100%!important;
+.${MOSAIC}[data-em-external="1"]{
+  overflow:visible!important;
+}
+.${FLOAT}{
+  position:fixed!important;
+  pointer-events:none!important;
+  z-index:2147483000!important;
+  box-sizing:border-box!important;
+  border-radius:inherit!important;
+}
+.${FLOAT}[data-em-mode="blur"]{
+  backdrop-filter:blur(22px) saturate(0.35)!important;
+  -webkit-backdrop-filter:blur(22px) saturate(0.35)!important;
+  background:rgba(245,245,245,.1)!important;
+}
+.${FLOAT}[data-em-mode="solid"]{
+  background:#000!important;
+  border-radius:2px!important;
+}
+.${FLOAT}[data-em-mode="pixel"]{
+  mix-blend-mode:normal!important;
+  backdrop-filter:blur(16px) saturate(0)!important;
+  -webkit-backdrop-filter:blur(16px) saturate(0)!important;
+  background-color:rgba(55,55,55,.9)!important;
+  background-image:
+    repeating-linear-gradient(0deg,rgba(140,140,140,.35) 0,rgba(140,140,140,.35) 6px,rgba(200,200,200,.3) 6px,rgba(200,200,200,.3) 12px),
+    repeating-linear-gradient(90deg,rgba(130,130,130,.3) 0,rgba(130,130,130,.3) 6px,rgba(210,210,210,.28) 6px,rgba(210,210,210,.28) 12px)!important;
+}
+.${FLOAT}[data-em-mode="dots"]{
+  mix-blend-mode:normal!important;
+  backdrop-filter:blur(14px) saturate(0)!important;
+  -webkit-backdrop-filter:blur(14px) saturate(0)!important;
+  background-color:rgba(235,235,235,.92)!important;
+  background-image:radial-gradient(circle at 38% 38%,rgba(0,0,0,.42) 1px,transparent 1.75px)!important;
+  background-size:4px 4px!important;
+}
+.${FLOAT}[data-em-mode="stripes"]{
+  mix-blend-mode:normal!important;
+  backdrop-filter:blur(10px) saturate(0)!important;
+  -webkit-backdrop-filter:blur(10px) saturate(0)!important;
+  background-color:rgba(40,40,40,.88)!important;
+  background-image:repeating-linear-gradient(-36deg,rgba(255,255,255,.18) 0,rgba(255,255,255,.18) 4px,transparent 4px,transparent 9px)!important;
 }
 #${GUIDE_ID}{
   position:fixed;
@@ -191,6 +229,20 @@
       if (ignore(el)) return false;
       if (!root) return el !== document.documentElement && el !== document.body;
       return root === el || root.contains(el);
+    }
+
+    function hitAt(x, y) {
+      const stack =
+        typeof document.elementsFromPoint === "function"
+          ? document.elementsFromPoint(x, y)
+          : [document.elementFromPoint(x, y)];
+      for (const el of stack) {
+        if (!el || el.nodeType !== 1) continue;
+        if (el.id === HOVER_MASK_ID || el.id === GUIDE_ID) continue;
+        if (el.classList?.contains(OVERLAY) || el.classList?.contains(FLOAT)) continue;
+        if (inScope(el)) return el;
+      }
+      return null;
     }
 
     function ensureHoverMask() {
@@ -266,8 +318,47 @@
       return EM_MODES.has(raw) ? raw : "blur";
     }
 
+    function needsExternalOverlay(el) {
+      if (!el || el.nodeType !== 1) return false;
+      const t = el.tagName;
+      if (EXTERNAL_OVERLAY.has(t)) return true;
+      if (t === "INPUT") {
+        const ty = (el.getAttribute("type") || "text").toLowerCase();
+        return !INPUT_WRAP_SKIP.has(ty);
+      }
+      return false;
+    }
+
+    function getFloatOverlay(el) {
+      const fid = el?.getAttribute("data-em-float-id");
+      return fid ? document.getElementById(fid) : null;
+    }
+
+    function syncFloatOverlay(el) {
+      const float = getFloatOverlay(el);
+      if (!float) return;
+      const r = el.getBoundingClientRect();
+      float.style.left = `${Math.round(r.left)}px`;
+      float.style.top = `${Math.round(r.top)}px`;
+      float.style.width = `${Math.max(0, Math.round(r.width))}px`;
+      float.style.height = `${Math.max(0, Math.round(r.height))}px`;
+      const mode = el.getAttribute("data-em-mode");
+      if (mode) float.setAttribute("data-em-mode", mode);
+    }
+
+    function syncAllFloatOverlays() {
+      document.querySelectorAll(`[data-em-float-id]`).forEach((el) => {
+        if (el.classList.contains(MOSAIC)) syncFloatOverlay(el);
+        else removeMosaicOverlay(el);
+      });
+    }
+
     function measureAndSetPseudoSize(el) {
       if (!el?.classList?.contains(MOSAIC)) return;
+      if (needsExternalOverlay(el)) {
+        syncFloatOverlay(el);
+        return;
+      }
       void el.offsetHeight;
       const w = el.offsetWidth;
       const h = el.offsetHeight;
@@ -293,6 +384,7 @@
         "resize",
         () => {
           queryMosaicNodes().forEach(measureAndSetPseudoSize);
+          syncAllFloatOverlays();
         },
         { passive: true }
       );
@@ -307,48 +399,55 @@
       );
     }
 
-    function needsFormControlWrap(el) {
-      if (!el || el.nodeType !== 1) return false;
-      const t = el.tagName;
-      if (t === "TEXTAREA" || t === "SELECT") return true;
-      if (t === "INPUT") {
-        const ty = (el.getAttribute("type") || "text").toLowerCase();
-        return !INPUT_WRAP_SKIP.has(ty);
-      }
-      return false;
-    }
-
-    function ensureFormWrap(control) {
-      const p = control.parentElement;
-      if (p?.classList.contains(WRAP)) return p;
-      const wrap = document.createElement("span");
-      wrap.className = WRAP;
-      p.insertBefore(wrap, control);
-      wrap.appendChild(control);
-      return wrap;
-    }
-
-    function unwrapFormWrap(wrap) {
-      if (!wrap?.classList.contains(WRAP)) return;
+    function unwrapLegacyWrap(el) {
+      const wrap = el?.closest?.(".em-mosaic-wrap");
+      if (!wrap?.parentNode) return el;
       const parent = wrap.parentNode;
-      if (!parent) return;
-      let ctrl = null;
-      for (const c of wrap.children) {
-        if (!c.classList.contains(OVERLAY)) {
-          ctrl = c;
-          break;
+      for (const c of [...wrap.children]) {
+        if (!c.classList.contains(OVERLAY) && !c.classList.contains(FLOAT)) {
+          parent.insertBefore(c, wrap);
+          if (wrap.classList.contains(MOSAIC)) {
+            c.classList.add(MOSAIC);
+            const mode = wrap.getAttribute("data-em-mode");
+            if (mode) c.setAttribute("data-em-mode", mode);
+          }
+          wrap.remove();
+          return c;
         }
       }
-      if (ctrl) parent.insertBefore(ctrl, wrap);
       wrap.remove();
+      return el;
     }
 
     function removeMosaicOverlay(el) {
-      el?.querySelector(`:scope > .${OVERLAY}`)?.remove();
+      if (!el) return;
+      el.querySelector(`:scope > .${OVERLAY}`)?.remove();
+      const float = getFloatOverlay(el);
+      if (float) float.remove();
+      el.removeAttribute("data-em-float-id");
+      el.removeAttribute("data-em-external");
     }
 
     function ensureMosaicOverlay(el) {
-      if (!el?.classList?.contains(MOSAIC) || !canUseOverlayChild(el)) return;
+      if (!el?.classList?.contains(MOSAIC)) return;
+      if (needsExternalOverlay(el)) {
+        el.setAttribute("data-em-external", "1");
+        let float = getFloatOverlay(el);
+        if (!float) {
+          const fid = `elementmark-float-${Math.random().toString(36).slice(2, 9)}`;
+          el.setAttribute("data-em-float-id", fid);
+          float = document.createElement("div");
+          float.id = fid;
+          float.className = FLOAT;
+          float.setAttribute("aria-hidden", "true");
+          document.documentElement.appendChild(float);
+        }
+        const mode = el.getAttribute("data-em-mode") || "blur";
+        float.setAttribute("data-em-mode", mode);
+        syncFloatOverlay(el);
+        return;
+      }
+      if (!canUseOverlayChild(el)) return;
       if (el.querySelector(`:scope > .${OVERLAY}`)) return;
       const layer = document.createElement("span");
       layer.className = OVERLAY;
@@ -382,22 +481,22 @@
     }
 
     function mosaicTargetForApply(hit) {
-      return needsFormControlWrap(hit) ? ensureFormWrap(hit) : hit;
+      return unwrapLegacyWrap(hit);
     }
 
     function applyMosaic(x, y) {
       if (!pick) return;
-      const hit = document.elementFromPoint(x, y);
-      if (!inScope(hit)) return;
+      const hit = hitAt(x, y);
+      if (!hit) return;
 
       const m = hit.closest(`.${MOSAIC}`);
       if (m && inScope(m)) {
-        if (last && (last === m || m.contains(last))) clearHl();
-        unbindMosaicLayout(m);
-        removeMosaicOverlay(m);
-        m.removeAttribute("data-em-mode");
-        m.classList.remove(MOSAIC);
-        if (m.classList.contains(WRAP)) unwrapFormWrap(m);
+        const target = m.classList.contains("em-mosaic-wrap") ? unwrapLegacyWrap(m) || m : m;
+        if (last && (last === target || target.contains(last))) clearHl();
+        unbindMosaicLayout(target);
+        removeMosaicOverlay(target);
+        target.removeAttribute("data-em-mode");
+        target.classList.remove(MOSAIC);
         syncGuides(last);
         return;
       }
@@ -415,8 +514,8 @@
     }
 
     function onMove(e) {
-      const el = document.elementFromPoint(e.clientX, e.clientY);
-      if (!inScope(el)) {
+      const el = hitAt(e.clientX, e.clientY);
+      if (!el) {
         clearHl();
         return;
       }
@@ -431,6 +530,7 @@
 
     function onClick(e) {
       if (!pick) return;
+      if (!hitAt(e.clientX, e.clientY)) return;
       e.preventDefault();
       e.stopPropagation();
       applyMosaic(e.clientX, e.clientY);
@@ -441,6 +541,7 @@
     }
 
     function onPickScroll() {
+      syncAllFloatOverlays();
       if (!pick || !last || !document.contains(last)) return;
       syncGuides(last);
     }
@@ -476,13 +577,14 @@
     }
 
     function clearAll() {
+      document.querySelectorAll(".em-mosaic-wrap").forEach((wrap) => unwrapLegacyWrap(wrap));
       queryMosaicNodes().forEach((el) => {
         unbindMosaicLayout(el);
         removeMosaicOverlay(el);
         el.removeAttribute("data-em-mode");
         el.classList.remove(MOSAIC);
-        if (el.classList.contains(WRAP)) unwrapFormWrap(el);
       });
+      document.querySelectorAll(`.${FLOAT}`).forEach((f) => f.remove());
     }
 
     function syncMode(mode) {

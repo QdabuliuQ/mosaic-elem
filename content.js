@@ -1,6 +1,6 @@
 const MOSAIC = "elementmark-mosaic";
 const OVERLAY = "em-mosaic-layer";
-const WRAP = "em-mosaic-wrap";
+const FLOAT = "em-mosaic-float";
 const GUIDE_ID = "elementmark-guides";
 const HOVER_MASK_ID = "elementmark-hover-mask";
 
@@ -22,7 +22,8 @@ const VOID_HTML = new Set([
   "WBR",
 ]);
 
-/** 子遮罩不能插在内部（仅允许包一层 WRAP 再打码） */
+/** textarea/select/input 无法用 ::after，改用固定定位浮动遮罩 */
+const EXTERNAL_OVERLAY = new Set(["TEXTAREA", "SELECT"]);
 const NO_INNER_OVERLAY = new Set(["TEXTAREA", "SELECT"]);
 
 const INPUT_WRAP_SKIP = new Set([
@@ -128,11 +129,48 @@ function injectStyle() {
   background:none!important;
   background-image:none!important;
 }
-.${WRAP}{
-  display:inline-block!important;
-  position:relative!important;
-  vertical-align:top!important;
-  max-width:100%!important;
+.${MOSAIC}[data-em-external="1"]{
+  overflow:visible!important;
+}
+.${FLOAT}{
+  position:fixed!important;
+  pointer-events:none!important;
+  z-index:2147483000!important;
+  box-sizing:border-box!important;
+  border-radius:inherit!important;
+}
+.${FLOAT}[data-em-mode="blur"]{
+  backdrop-filter:blur(22px) saturate(0.35)!important;
+  -webkit-backdrop-filter:blur(22px) saturate(0.35)!important;
+  background:rgba(245,245,245,.1)!important;
+}
+.${FLOAT}[data-em-mode="solid"]{
+  background:#000!important;
+  border-radius:2px!important;
+}
+.${FLOAT}[data-em-mode="pixel"]{
+  mix-blend-mode:normal!important;
+  backdrop-filter:blur(16px) saturate(0)!important;
+  -webkit-backdrop-filter:blur(16px) saturate(0)!important;
+  background-color:rgba(55,55,55,.9)!important;
+  background-image:
+    repeating-linear-gradient(0deg,rgba(140,140,140,.35) 0,rgba(140,140,140,.35) 6px,rgba(200,200,200,.3) 6px,rgba(200,200,200,.3) 12px),
+    repeating-linear-gradient(90deg,rgba(130,130,130,.3) 0,rgba(130,130,130,.3) 6px,rgba(210,210,210,.28) 6px,rgba(210,210,210,.28) 12px)!important;
+}
+.${FLOAT}[data-em-mode="dots"]{
+  mix-blend-mode:normal!important;
+  backdrop-filter:blur(14px) saturate(0)!important;
+  -webkit-backdrop-filter:blur(14px) saturate(0)!important;
+  background-color:rgba(235,235,235,.92)!important;
+  background-image:radial-gradient(circle at 38% 38%,rgba(0,0,0,.42) 1px,transparent 1.75px)!important;
+  background-size:4px 4px!important;
+}
+.${FLOAT}[data-em-mode="stripes"]{
+  mix-blend-mode:normal!important;
+  backdrop-filter:blur(10px) saturate(0)!important;
+  -webkit-backdrop-filter:blur(10px) saturate(0)!important;
+  background-color:rgba(40,40,40,.88)!important;
+  background-image:repeating-linear-gradient(-36deg,rgba(255,255,255,.18) 0,rgba(255,255,255,.18) 4px,transparent 4px,transparent 9px)!important;
 }
 #${GUIDE_ID}{
   position:fixed;
@@ -311,13 +349,53 @@ function ensureMosaicWindowResize() {
     "resize",
     () => {
       document.querySelectorAll(`.${MOSAIC}`).forEach(measureAndSetPseudoSize);
+      syncAllFloatOverlays();
     },
     { passive: true }
   );
 }
 
+function needsExternalOverlay(el) {
+  if (!el || el.nodeType !== 1) return false;
+  const t = el.tagName;
+  if (EXTERNAL_OVERLAY.has(t)) return true;
+  if (t === "INPUT") {
+    const ty = (el.getAttribute("type") || "text").toLowerCase();
+    return !INPUT_WRAP_SKIP.has(ty);
+  }
+  return false;
+}
+
+function getFloatOverlay(el) {
+  const fid = el?.getAttribute("data-em-float-id");
+  return fid ? document.getElementById(fid) : null;
+}
+
+function syncFloatOverlay(el) {
+  const float = getFloatOverlay(el);
+  if (!float) return;
+  const r = el.getBoundingClientRect();
+  float.style.left = `${Math.round(r.left)}px`;
+  float.style.top = `${Math.round(r.top)}px`;
+  float.style.width = `${Math.max(0, Math.round(r.width))}px`;
+  float.style.height = `${Math.max(0, Math.round(r.height))}px`;
+  const mode = el.getAttribute("data-em-mode");
+  if (mode) float.setAttribute("data-em-mode", mode);
+}
+
+function syncAllFloatOverlays() {
+  document.querySelectorAll(`[data-em-float-id]`).forEach((el) => {
+    if (el.classList.contains(MOSAIC)) syncFloatOverlay(el);
+    else removeMosaicOverlay(el);
+  });
+}
+
 function measureAndSetPseudoSize(el) {
   if (!el?.classList?.contains(MOSAIC)) return;
+  if (needsExternalOverlay(el)) {
+    syncFloatOverlay(el);
+    return;
+  }
   void el.offsetHeight;
   const w = el.offsetWidth;
   const h = el.offsetHeight;
@@ -334,48 +412,55 @@ function canUseOverlayChild(el) {
   );
 }
 
-function needsFormControlWrap(el) {
-  if (!el || el.nodeType !== 1) return false;
-  const t = el.tagName;
-  if (t === "TEXTAREA" || t === "SELECT") return true;
-  if (t === "INPUT") {
-    const ty = (el.getAttribute("type") || "text").toLowerCase();
-    return !INPUT_WRAP_SKIP.has(ty);
-  }
-  return false;
-}
-
-function ensureFormWrap(control) {
-  const p = control.parentElement;
-  if (p?.classList.contains(WRAP)) return p;
-  const wrap = document.createElement("span");
-  wrap.className = WRAP;
-  p.insertBefore(wrap, control);
-  wrap.appendChild(control);
-  return wrap;
-}
-
-function unwrapFormWrap(wrap) {
-  if (!wrap?.classList.contains(WRAP)) return;
+function unwrapLegacyWrap(el) {
+  const wrap = el?.closest?.(".em-mosaic-wrap");
+  if (!wrap?.parentNode) return el;
   const parent = wrap.parentNode;
-  if (!parent) return;
-  let ctrl = null;
-  for (const c of wrap.children) {
-    if (!c.classList.contains(OVERLAY)) {
-      ctrl = c;
-      break;
+  for (const c of [...wrap.children]) {
+    if (!c.classList.contains(OVERLAY) && !c.classList.contains(FLOAT)) {
+      parent.insertBefore(c, wrap);
+      if (wrap.classList.contains(MOSAIC)) {
+        c.classList.add(MOSAIC);
+        const mode = wrap.getAttribute("data-em-mode");
+        if (mode) c.setAttribute("data-em-mode", mode);
+      }
+      wrap.remove();
+      return c;
     }
   }
-  if (ctrl) parent.insertBefore(ctrl, wrap);
   wrap.remove();
+  return el;
 }
 
 function removeMosaicOverlay(el) {
-  el?.querySelector(`:scope > .${OVERLAY}`)?.remove();
+  if (!el) return;
+  el.querySelector(`:scope > .${OVERLAY}`)?.remove();
+  const float = getFloatOverlay(el);
+  if (float) float.remove();
+  el.removeAttribute("data-em-float-id");
+  el.removeAttribute("data-em-external");
 }
 
 function ensureMosaicOverlay(el) {
-  if (!el?.classList?.contains(MOSAIC) || !canUseOverlayChild(el)) return;
+  if (!el?.classList?.contains(MOSAIC)) return;
+  if (needsExternalOverlay(el)) {
+    el.setAttribute("data-em-external", "1");
+    let float = getFloatOverlay(el);
+    if (!float) {
+      const fid = `elementmark-float-${Math.random().toString(36).slice(2, 9)}`;
+      el.setAttribute("data-em-float-id", fid);
+      float = document.createElement("div");
+      float.id = fid;
+      float.className = FLOAT;
+      float.setAttribute("aria-hidden", "true");
+      document.documentElement.appendChild(float);
+    }
+    const mode = el.getAttribute("data-em-mode") || "blur";
+    float.setAttribute("data-em-mode", mode);
+    syncFloatOverlay(el);
+    return;
+  }
+  if (!canUseOverlayChild(el)) return;
   if (el.querySelector(`:scope > .${OVERLAY}`)) return;
   const layer = document.createElement("span");
   layer.className = OVERLAY;
@@ -409,20 +494,25 @@ function applyModeToEl(el, mode) {
 }
 
 function mosaicTargetForApply(hit) {
-  return needsFormControlWrap(hit) ? ensureFormWrap(hit) : hit;
+  return unwrapLegacyWrap(hit);
 }
 
 function migrateMosaicHostIfNeeded(el) {
-  if (!el?.classList?.contains(MOSAIC)) return el;
-  if (needsFormControlWrap(el) && !el.parentElement?.classList.contains(WRAP)) {
+  if (!el) return el;
+  if (el.classList?.contains("em-mosaic-wrap")) {
     const mode = el.getAttribute("data-em-mode");
-    el.classList.remove(MOSAIC);
-    el.removeAttribute("data-em-mode");
-    el.removeAttribute("data-em-label");
-    const wrap = ensureFormWrap(el);
-    wrap.classList.add(MOSAIC);
-    if (mode) wrap.setAttribute("data-em-mode", mode);
-    return wrap;
+    const ctrl = unwrapLegacyWrap(el);
+    if (ctrl && mode) {
+      ctrl.classList.add(MOSAIC);
+      ctrl.setAttribute("data-em-mode", mode);
+    }
+    return ctrl || el;
+  }
+  if (el.parentElement?.classList?.contains("em-mosaic-wrap")) {
+    const mode = el.getAttribute("data-em-mode") || el.parentElement.getAttribute("data-em-mode");
+    const ctrl = unwrapLegacyWrap(el);
+    if (ctrl?.classList.contains(MOSAIC) && mode) ctrl.setAttribute("data-em-mode", mode);
+    return ctrl || el;
   }
   return el;
 }
@@ -448,13 +538,13 @@ async function applyMosaic(x, y) {
 
   const m = hit.closest(`.${MOSAIC}`);
   if (m) {
-    if (last && (last === m || m.contains(last))) clearHl();
-    unbindMosaicLayout(m);
-    removeMosaicOverlay(m);
-    m.removeAttribute("data-em-mode");
-    m.removeAttribute("data-em-label");
-    m.classList.remove(MOSAIC);
-    if (m.classList.contains(WRAP)) unwrapFormWrap(m);
+    const target = m.classList.contains("em-mosaic-wrap") ? unwrapLegacyWrap(m) || m : m;
+    if (last && (last === target || target.contains(last))) clearHl();
+    unbindMosaicLayout(target);
+    removeMosaicOverlay(target);
+    target.removeAttribute("data-em-mode");
+    target.removeAttribute("data-em-label");
+    target.classList.remove(MOSAIC);
     syncGuides(last);
     console.log("[MosaicElem] mosaic 已移除", m.tagName, m.className);
     return;
@@ -487,6 +577,7 @@ function onKey(e) {
 }
 
 function onPickScroll() {
+  syncAllFloatOverlays();
   if (!pick || !last || !document.contains(last)) return;
   syncGuides(last);
 }
@@ -530,6 +621,7 @@ function stopPick() {
 }
 
 function clearAllMosaic() {
+  document.querySelectorAll(".em-mosaic-wrap").forEach((wrap) => unwrapLegacyWrap(wrap));
   const nodes = document.querySelectorAll(`.${MOSAIC}`);
   const n = nodes.length;
   nodes.forEach((el) => {
@@ -538,8 +630,8 @@ function clearAllMosaic() {
     el.removeAttribute("data-em-mode");
     el.removeAttribute("data-em-label");
     el.classList.remove(MOSAIC);
-    if (el.classList.contains(WRAP)) unwrapFormWrap(el);
   });
+  document.querySelectorAll(`.${FLOAT}`).forEach((f) => f.remove());
   console.log("[MosaicElem] clearAllMosaic", n);
   return n;
 }

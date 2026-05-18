@@ -5,7 +5,7 @@
       navFeatures: "功能",
       navInstall: "安装",
       heroTag: "PRIVACY · REDACTION · MV3",
-      heroTitle: "点选即打码\n科幻级隐私遮挡",
+      heroTitle: "点选即打码",
       heroDesc: "在任意网页上选中元素，施加模糊或马赛克。截图、录屏、分享前快速脱敏。",
       heroCta: "立即体验",
       heroGithub: "查看源码",
@@ -46,7 +46,7 @@
       navFeatures: "Features",
       navInstall: "Install",
       heroTag: "PRIVACY · REDACTION · MV3",
-      heroTitle: "Pick. Redact.\nSci-fi privacy overlay",
+      heroTitle: "Pick. Redact.",
       heroDesc:
         "Select any element on a page and apply blur or mosaic before screenshots and screen sharing.",
       heroCta: "Try it now",
@@ -90,22 +90,13 @@
   const btnPick = document.getElementById("btn-pick");
   const btnClear = document.getElementById("btn-clear");
   const statusEl = document.getElementById("demo-status");
-  const heroTitle = document.querySelector(".hero h1");
-
   function t(key) {
     return I18N[lang][key] || key;
   }
 
   function applyLang() {
     document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
-    if (heroTitle) {
-      heroTitle.innerHTML =
-        lang === "zh"
-          ? '点选即打码<br /><span class="accent">科幻级隐私遮挡</span>'
-          : 'Pick. Redact.<br /><span class="accent">Sci-fi privacy overlay</span>';
-    }
     document.querySelectorAll("[data-i18n]").forEach((el) => {
-      if (el === heroTitle) return;
       el.textContent = t(el.dataset.i18n);
     });
     document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
@@ -122,9 +113,14 @@
     return r ? r.value : "blur";
   }
 
+  if (!stage || !window.MosaicElemEngine) {
+    console.error("[MosaicElem] demo-stage or MosaicElemEngine missing");
+    return;
+  }
+
   const engine = window.MosaicElemEngine.create({
     root: stage,
-    ignore: (el) => Boolean(el.closest("[data-em-ignore]")),
+    ignore: (el) => Boolean(el?.closest?.("[data-em-ignore]")),
     getMode,
     onPickChange(on) {
       stage.classList.toggle("is-picking", on);
