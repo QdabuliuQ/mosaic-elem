@@ -39,6 +39,7 @@
   "btnPickStopTitle": { "message": "退出点选；或按 Esc。", "description": "按钮提示" },
   "cmdTogglePick": { "message": "切换元素选中模式", "description": "快捷键说明" },
   "btnClearAll": { "message": "清除全部马赛克", "description": "按钮" },
+  "linkHomepage": { "message": "插件官网 · 在线体验", "description": "官网链接" },
   "statusPickOn": { "message": "已开启，Esc 退出", "description": "状态" },
   "statusPickOff": { "message": "已关闭", "description": "状态" },
   "statusCleared": { "message": "已清除全部马赛克", "description": "状态" },

@@ -156,6 +156,8 @@ function setToggleVisual(on) {
 }
 
 applyI18n();
+const homeLink = document.getElementById("home");
+if (homeLink) homeLink.href = chrome.runtime.getURL("website/index.html");
 renderShortcutLine();
 setToggleVisual(false);
 

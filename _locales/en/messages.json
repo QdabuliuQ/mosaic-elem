@@ -42,6 +42,7 @@
   "btnPickStopTitle": { "message": "Exit pick mode; or press Esc.", "description": "Button tooltip" },
   "cmdTogglePick": { "message": "Toggle element pick mode", "description": "Keyboard command" },
   "btnClearAll": { "message": "Clear all obfuscation", "description": "Button" },
+  "linkHomepage": { "message": "Website · Live demo", "description": "Homepage link" },
   "statusPickOn": { "message": "Pick mode on. Press Esc to exit.", "description": "Status" },
   "statusPickOff": { "message": "Pick mode off.", "description": "Status" },
   "statusCleared": { "message": "All obfuscation removed.", "description": "Status" },

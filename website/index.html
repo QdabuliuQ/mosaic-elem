@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MosaicElem — 网页元素打码扩展</title>
+  <meta name="description" content="点选页面元素，一键模糊或马赛克遮挡。在线体验演示。" />
+  <link rel="icon" href="icons/icon-48.png" />
+  <link rel="stylesheet" href="css/site.css" />
+</head>
+<body>
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-glow bg-glow-a" aria-hidden="true"></div>
+  <div class="bg-glow bg-glow-b" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="logo" href="#">
+      <img src="icons/icon-48.png" width="36" height="36" alt="" />
+      <span>MosaicElem</span>
+    </a>
+    <nav class="nav">
+      <a href="#demo" data-i18n="navDemo">在线体验</a>
+      <a href="#features" data-i18n="navFeatures">功能</a>
+      <a href="#install" data-i18n="navInstall">安装</a>
+      <a class="nav-github" href="https://github.com/QdabuliuQ/mosaic-elem" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+    <div class="lang-switch">
+      <button type="button" class="lang-btn is-active" data-lang="zh">中文</button>
+      <button type="button" class="lang-btn" data-lang="en">EN</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="hero-tag" data-i18n="heroTag">PRIVACY · REDACTION · MV3</p>
+      <h1 data-i18n="heroTitle">点选即打码<br /><span class="accent">科幻级隐私遮挡</span></h1>
+      <p class="hero-desc" data-i18n="heroDesc">在任意网页上选中元素，施加模糊或马赛克。截图、录屏、分享前快速脱敏。</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#demo" data-i18n="heroCta">立即体验</a>
+        <a class="btn btn-ghost" href="https://github.com/QdabuliuQ/mosaic-elem" target="_blank" rel="noopener" data-i18n="heroGithub">查看源码</a>
+      </div>
+    </section>
+
+    <section class="demo" id="demo">
+      <div class="section-head">
+        <h2 data-i18n="demoTitle">在线体验</h2>
+        <p data-i18n="demoHint">与扩展相同的打码引擎 · 在下方模拟页面中点选元素</p>
+      </div>
+
+      <div class="demo-shell">
+        <div class="demo-toolbar" data-em-ignore>
+          <div class="mode-group" role="radiogroup" aria-label="Obfuscation mode">
+            <label class="mode-chip"><input type="radio" name="mode" value="blur" checked /><span data-i18n="modeBlur">模糊</span></label>
+            <label class="mode-chip"><input type="radio" name="mode" value="pixel" /><span data-i18n="modePixel">像素</span></label>
+            <label class="mode-chip"><input type="radio" name="mode" value="solid" /><span data-i18n="modeSolid">纯色</span></label>
+            <label class="mode-chip"><input type="radio" name="mode" value="dots" /><span data-i18n="modeDots">点阵</span></label>
+            <label class="mode-chip"><input type="radio" name="mode" value="stripes" /><span data-i18n="modeStripes">条纹</span></label>
+          </div>
+          <div class="demo-actions">
+            <button type="button" id="btn-pick" class="btn btn-primary" data-i18n="btnPickStart">开启选择元素</button>
+            <button type="button" id="btn-clear" class="btn btn-ghost" data-i18n="btnClear">清除全部</button>
+          </div>
+          <p class="demo-status" id="demo-status" data-i18n="statusIdle">选择一种样式后开启点选，Esc 退出</p>
+        </div>
+
+        <div class="demo-window">
+          <div class="demo-chrome" data-em-ignore aria-hidden="true">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="demo-url">demo://mosaic-elem.app</span>
+          </div>
+          <div class="demo-stage" id="demo-stage">
+            <article class="mock-card">
+              <div class="mock-avatar"></div>
+              <div class="mock-body">
+                <h3 class="mock-name">Alex Chen</h3>
+                <p class="mock-email">alex.chen@example.com</p>
+                <p class="mock-id">ID: 8849-2201-7733</p>
+                <p class="mock-note" data-i18n="mockNote">点击下方留言或输入框试试打码效果。</p>
+              </div>
+            </article>
+            <form class="mock-form" onsubmit="return false">
+              <label data-i18n="mockLabel">留言</label>
+              <textarea rows="2" data-i18n-placeholder="mockPlaceholder" placeholder="敏感内容示例…"></textarea>
+            </form>
+            <p class="mock-footer" data-i18n="mockFooter">© 2026 Demo Page — 仅用于演示</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features" id="features">
+      <h2 data-i18n="featuresTitle">功能亮点</h2>
+      <div class="feature-grid">
+        <article><h3 data-i18n="f1t">点选切换</h3><p data-i18n="f1d">悬停高亮，单击施加或取消打码。</p></article>
+        <article><h3 data-i18n="f2t">五种样式</h3><p data-i18n="f2d">模糊、像素格、纯色、点阵、斜纹。</p></article>
+        <article><h3 data-i18n="f3t">快捷键</h3><p data-i18n="f3d">Ctrl/⌘ + Shift + 1 快速开关点选。</p></article>
+        <article><h3 data-i18n="f4t">表单友好</h3><p data-i18n="f4d">支持 textarea 等控件的稳定遮挡。</p></article>
+      </div>
+    </section>
+
+    <section class="install" id="install">
+      <h2 data-i18n="installTitle">安装扩展</h2>
+      <ol class="install-steps">
+        <li data-i18n="install1">克隆仓库或下载 ZIP</li>
+        <li data-i18n="install2">打开 chrome://extensions 或 edge://extensions</li>
+        <li data-i18n="install3">开启开发者模式 → 加载已解压的扩展程序</li>
+      </ol>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>MosaicElem</span>
+    <span data-i18n="footer">开源浏览器扩展 · MIT</span>
+  </footer>
+
+  <script src="shared/mosaic-engine.js"></script>
+  <script src="js/site.js"></script>
+</body>
+</html>

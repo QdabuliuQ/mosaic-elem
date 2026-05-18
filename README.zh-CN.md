@@ -8,6 +8,25 @@
 
 基于 **Manifest V3** 的 Chromium 扩展：在网页上**点选元素**，对其施加**模糊或马赛克式遮挡**，适合截图、录屏前的快速隐私处理。
 
+## 插件官网（在线体验）
+
+**线上地址：** [GitHub Pages](https://qdabiliuq.github.io/mosaic-elem/)（推送到 `main` 后由 [`.github/workflows/deploy-website.yml`](.github/workflows/deploy-website.yml) 自动部署）。
+
+**本地预览：**
+
+```bash
+bash scripts/build-website.sh
+npx --yes serve .website-dist
+```
+
+页面使用与扩展相同的打码引擎（`shared/mosaic-engine.js`）。扩展弹窗内 **插件官网 · 在线体验** 可打开扩展内置首页。
+
+### 开启 GitHub Pages（首次）
+
+1. 仓库 **Settings → Pages**
+2. **Build and deployment → Source** 选 **GitHub Actions**
+3. 推送到 `main`，等待 **Deploy website** 工作流完成
+
 ## 预览
 
 <p align="center">
@@ -78,6 +97,9 @@
 ├── content.js
 ├── page-pick.js
 ├── popup.html / popup.css / popup.js
+├── website/              # 官网与在线演示
+├── shared/mosaic-engine.js
+├── .github/workflows/    # GitHub Pages 部署
 ├── icons/
 ├── screenshots/          # 文档 / README 配图（可选）
 └── _locales/

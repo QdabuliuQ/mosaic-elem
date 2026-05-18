@@ -8,6 +8,25 @@
 
 Chromium extension (**Manifest V3**) to **pick elements** on any page and apply **blur or mosaic-style obfuscation** before screenshots or screen sharing—handy for quick privacy redaction.
 
+## Website (live demo)
+
+**Production:** [GitHub Pages](https://qdabiliuq.github.io/mosaic-elem/) (deployed automatically on push to `main` via [`.github/workflows/deploy-website.yml`](.github/workflows/deploy-website.yml)).
+
+**Local preview:**
+
+```bash
+bash scripts/build-website.sh
+npx --yes serve .website-dist
+```
+
+The demo uses the same masking engine as the extension (`shared/mosaic-engine.js`). From the extension popup, **Website · Live demo** opens the bundled copy inside the extension.
+
+### Enable GitHub Pages (one-time)
+
+1. Repo **Settings → Pages**
+2. **Build and deployment → Source:** GitHub Actions
+3. Push to `main`; the **Deploy website** workflow publishes the site
+
 ## Preview
 
 <p align="center">
@@ -78,6 +97,9 @@ Values in `manifest.json` only **suggest** a binding; they do not replace a shor
 ├── content.js
 ├── page-pick.js
 ├── popup.html / popup.css / popup.js
+├── website/              # official site + live demo
+├── shared/mosaic-engine.js
+├── .github/workflows/    # GitHub Pages deploy
 ├── icons/
 ├── screenshots/          # optional images for docs / README
 └── _locales/

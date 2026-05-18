@@ -27,6 +27,9 @@ Desktop.ini
 # 本地打包脚本与输出（不提交 GitHub）
 scripts/pack-extension.sh
 
+# GitHub Pages 本地构建输出
+.website-dist/
+
 # If you add a JS toolchain later
 node_modules/
 build/
