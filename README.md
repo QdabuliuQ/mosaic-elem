@@ -22,7 +22,7 @@ Chromium extension (**Manifest V3**) to **pick elements** on any page and apply 
 - **Multiple obfuscation styles** — Gaussian blur, pixel/grid mosaic, solid overlay, dot/halftone, diagonal stripes.
 - **Per-tab styling** — selected mode is persisted and broadcast to other tabs.
 - **i18n** — English (`en`) and Simplified Chinese (`zh_CN`).
-- **Robust masking** — a dedicated overlay node avoids common `::after` conflicts (e.g. Tailwind `after:`); `textarea` / `select` / text-like `input` use a fixed-position float layer because pseudo-elements are not reliable on form controls.
+- **Robust masking** — most elements use a child `em-mosaic-layer` (when present, the extension’s own `::after` is disabled to reduce conflicts with Tailwind `after:` and similar); `textarea` / `select` / text-like `input` are replaced elements where pseudo-elements are unreliable, so a `position: fixed` float layer is aligned instead.
 
 ## Requirements
 
