@@ -8,9 +8,11 @@
 
 Chromium extension (**Manifest V3**) to **pick elements** on any page and apply **blur or mosaic-style obfuscation** before screenshots or screen sharing—handy for quick privacy redaction.
 
+**Live demo:** https://qdabuliuq.github.io/mosaic-elem/
+
 ## Website (live demo)
 
-**Production:** [GitHub Pages](https://qdabiliuq.github.io/mosaic-elem/) (deployed automatically on push to `main` via [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)).
+**Production:** https://qdabuliuq.github.io/mosaic-elem/ (deployed automatically on push to `main` via [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)).
 
 **Local preview:**
 
@@ -28,6 +30,8 @@ The demo uses the same masking engine as the extension (`shared/mosaic-engine.js
 3. Push to `main`; the **Deploy website** workflow publishes the site
 
 ## Preview
+
+**Website:** https://qdabuliuq.github.io/mosaic-elem/
 
 <p align="center">
   <img src="screenshots/preview.png" alt="MosaicElem extension popup" width="360" />

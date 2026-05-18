@@ -8,9 +8,11 @@
 
 基于 **Manifest V3** 的 Chromium 扩展：在网页上**点选元素**，对其施加**模糊或马赛克式遮挡**，适合截图、录屏前的快速隐私处理。
 
+**在线预览：** https://qdabuliuq.github.io/mosaic-elem/
+
 ## 插件官网（在线体验）
 
-**线上地址：** [GitHub Pages](https://qdabiliuq.github.io/mosaic-elem/)（推送到 `main` 后由 [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) 自动部署）。
+**线上地址：** https://qdabuliuq.github.io/mosaic-elem/（推送到 `main` 后由 [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) 自动部署）。
 
 **本地预览：**
 
@@ -28,6 +30,8 @@ npx --yes serve .website-dist
 3. 推送到 `main`，等待 **Deploy website** 工作流完成
 
 ## 预览
+
+**官网预览：** https://qdabuliuq.github.io/mosaic-elem/
 
 <p align="center">
   <img src="screenshots/preview.png" alt="MosaicElem 扩展弹窗" width="360" />
