@@ -9,30 +9,6 @@
 基于 **Manifest V3** 的 Chromium 扩展：在网页上**点选元素**，对其施加**模糊或马赛克式遮挡**，适合截图、录屏前的快速隐私处理。
 
 **在线预览：** https://qdabuliuq.github.io/mosaic-elem/
-
-## 插件官网（在线体验）
-
-**线上地址：** https://qdabuliuq.github.io/mosaic-elem/（推送到 `main` 后由 [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) 自动部署）。
-
-**本地预览：**
-
-```bash
-bash scripts/build-website.sh
-npx --yes serve .website-dist
-```
-
-页面使用与扩展相同的打码引擎（`shared/mosaic-engine.js`）。扩展弹窗内 **插件官网 · 在线体验** 可打开扩展内置首页。
-
-### 开启 GitHub Pages（首次）
-
-1. 仓库 **Settings → Pages**
-2. **Build and deployment → Source** 选 **GitHub Actions**
-3. 推送到 `main`，等待 **Deploy website** 工作流完成
-
-## 预览
-
-**官网预览：** https://qdabuliuq.github.io/mosaic-elem/
-
 <p align="center">
   <img src="screenshots/preview.png" alt="MosaicElem 扩展弹窗" width="360" />
   &nbsp;&nbsp;
@@ -46,7 +22,7 @@ npx --yes serve .website-dist
 - **多种遮挡样式** — 高斯模糊、像素格马赛克、纯色块、点阵/网点、斜条纹等。
 - **模式记忆** — 所选样式写入存储，并在多标签间同步。
 - **国际化** — 英文（`en`）与简体中文（`zh_CN`）。
-- **稳定绘制** — 使用独立遮罩层，减少与页面 `::after`（如 Tailwind `after:`）冲突；对 `textarea`、`select`、常见文本类 `input` 使用包裹层，保证打码可用。
+- **稳定绘制** — 独立遮罩层减少与页面 `::after`（如 Tailwind `after:`）冲突；`textarea` / `select` / 文本类 `input` 因无法用伪元素，采用固定定位浮动层对齐打码。
 
 ## 环境要求
 

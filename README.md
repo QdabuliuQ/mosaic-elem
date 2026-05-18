@@ -9,30 +9,6 @@
 Chromium extension (**Manifest V3**) to **pick elements** on any page and apply **blur or mosaic-style obfuscation** before screenshots or screen sharing—handy for quick privacy redaction.
 
 **Live demo:** https://qdabuliuq.github.io/mosaic-elem/
-
-## Website (live demo)
-
-**Production:** https://qdabuliuq.github.io/mosaic-elem/ (deployed automatically on push to `main` via [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)).
-
-**Local preview:**
-
-```bash
-bash scripts/build-website.sh
-npx --yes serve .website-dist
-```
-
-The demo uses the same masking engine as the extension (`shared/mosaic-engine.js`). From the extension popup, **Website · Live demo** opens the bundled copy inside the extension.
-
-### Enable GitHub Pages (one-time)
-
-1. Repo **Settings → Pages**
-2. **Build and deployment → Source:** GitHub Actions
-3. Push to `main`; the **Deploy website** workflow publishes the site
-
-## Preview
-
-**Website:** https://qdabuliuq.github.io/mosaic-elem/
-
 <p align="center">
   <img src="screenshots/preview.png" alt="MosaicElem extension popup" width="360" />
   &nbsp;&nbsp;
@@ -46,7 +22,7 @@ The demo uses the same masking engine as the extension (`shared/mosaic-engine.js
 - **Multiple obfuscation styles** — Gaussian blur, pixel/grid mosaic, solid overlay, dot/halftone, diagonal stripes.
 - **Per-tab styling** — selected mode is persisted and broadcast to other tabs.
 - **i18n** — English (`en`) and Simplified Chinese (`zh_CN`).
-- **Robust masking** — a dedicated overlay node avoids common `::after` conflicts (e.g. Tailwind `after:`); `textarea` / `select` / text-like `input` are wrapped so masking works reliably.
+- **Robust masking** — a dedicated overlay node avoids common `::after` conflicts (e.g. Tailwind `after:`); `textarea` / `select` / text-like `input` use a fixed-position float layer because pseudo-elements are not reliable on form controls.
 
 ## Requirements
 
