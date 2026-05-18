@@ -10,7 +10,7 @@
 
 ## 插件官网（在线体验）
 
-**线上地址：** [GitHub Pages](https://qdabiliuq.github.io/mosaic-elem/)（推送到 `main` 后由 [`.github/workflows/deploy-website.yml`](.github/workflows/deploy-website.yml) 自动部署）。
+**线上地址：** [GitHub Pages](https://qdabiliuq.github.io/mosaic-elem/)（推送到 `main` 后由 [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) 自动部署）。
 
 **本地预览：**
 

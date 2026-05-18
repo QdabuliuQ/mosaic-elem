@@ -10,7 +10,7 @@ Chromium extension (**Manifest V3**) to **pick elements** on any page and apply 
 
 ## Website (live demo)
 
-**Production:** [GitHub Pages](https://qdabiliuq.github.io/mosaic-elem/) (deployed automatically on push to `main` via [`.github/workflows/deploy-website.yml`](.github/workflows/deploy-website.yml)).
+**Production:** [GitHub Pages](https://qdabiliuq.github.io/mosaic-elem/) (deployed automatically on push to `main` via [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)).
 
 **Local preview:**
 
